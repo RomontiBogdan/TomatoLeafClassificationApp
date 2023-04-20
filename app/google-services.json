@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "508259347353",
+    "firebase_url": "https://leafdiseasedetection-37469-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "leafdiseasedetection-37469",
+    "storage_bucket": "leafdiseasedetection-37469.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508259347353:android:c8bce8e074c684c93ec108",
+        "android_client_info": {
+          "package_name": "com.example.tomatoleafdiseaseclassificationapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508259347353-3dnkqce8n3eu6vucbeeatm32v87e96pc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkJG97Nh4Ds1Qe8qkfNdNwBzUio9RDdGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508259347353-3dnkqce8n3eu6vucbeeatm32v87e96pc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
