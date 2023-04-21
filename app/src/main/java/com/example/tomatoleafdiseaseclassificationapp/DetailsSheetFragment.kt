@@ -1,59 +1,79 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
+import android.os.Build
 import android.os.Bundle
+import android.transition.AutoTransition
+import android.transition.TransitionManager
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
+import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityTreatmentBinding
+import com.example.tomatoleafdiseaseclassificationapp.databinding.FragmentDetailsSheetBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class DetailsSheetFragment : BottomSheetDialogFragment() {
+    private lateinit var fragmentDetailsSheetBinding: FragmentDetailsSheetBinding
+    private lateinit var treatmentArrowButton: ImageButton
+    private lateinit var symptomsArrowButton: ImageButton
+    private lateinit var causesArrowButton: ImageButton
+    private lateinit var treatmentHiddenView: LinearLayout
+    private lateinit var symptomsHiddenView: LinearLayout
+    private lateinit var causesHiddenView: LinearLayout
+    private lateinit var treatmentCardview: CardView
+    private lateinit var symptomsCardview: CardView
+    private lateinit var causesCardview: CardView
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DetailsSheetFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class DetailsSheetFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private fun set_expandable(arrow : ImageButton, hiddenView : LinearLayout, cardView : CardView) {
+        arrow.setOnClickListener {
+            // If the CardView is already expanded, set its visibility
+            // to gone and change the expand less icon to expand more.
+            Log.d("EXPANDABLE","set_expandable() started")
+            if (hiddenView.visibility == View.VISIBLE) {
+                // The transition of the hiddenView is carried out by the TransitionManager class.
+                // Here we use an object of the AutoTransition Class to create a default transition
+                TransitionManager.beginDelayedTransition(cardView, AutoTransition())
+                hiddenView.visibility = View.GONE
+                arrow.setImageResource(R.drawable.ic_baseline_expand_more_24)
+            } else {
+                TransitionManager.beginDelayedTransition(cardView, AutoTransition())
+                hiddenView.visibility = View.VISIBLE
+                arrow.setImageResource(R.drawable.ic_baseline_expand_less_24)
+            }
         }
     }
 
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details_sheet, container, false)
+        fragmentDetailsSheetBinding = FragmentDetailsSheetBinding.inflate(inflater, container, false)
+
+        treatmentCardview = fragmentDetailsSheetBinding.treatmentCardview
+        treatmentArrowButton = fragmentDetailsSheetBinding.treatmentArrowButton
+        treatmentHiddenView = fragmentDetailsSheetBinding.treatmentHiddenView
+
+        symptomsCardview = fragmentDetailsSheetBinding.symptomsCardview
+        symptomsArrowButton = fragmentDetailsSheetBinding.symptomsArrowButton
+        symptomsHiddenView = fragmentDetailsSheetBinding.symptomsHiddenView
+
+        causesCardview = fragmentDetailsSheetBinding.causesCardview
+        causesArrowButton = fragmentDetailsSheetBinding.causesArrowButton
+        causesHiddenView = fragmentDetailsSheetBinding.causesHiddenView
+
+        set_expandable(treatmentArrowButton, treatmentHiddenView, treatmentCardview)
+        set_expandable(symptomsArrowButton, symptomsHiddenView, symptomsCardview)
+        set_expandable(causesArrowButton, causesHiddenView, causesCardview)
+        return fragmentDetailsSheetBinding.root
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DetailsSheetFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DetailsSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        const val TAG = "ModalBottomSheet"
     }
 }

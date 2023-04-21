@@ -108,6 +108,8 @@ class CameraActivity : AppCompatActivity() {
                     )
 //                activityCameraBinding.imagePredicted.setImageBitmap(uprightImage)
 //                activityCameraBinding.imagePredicted.visibility = View.VISIBLE
+                val modalBottomSheet = DetailsSheetFragment()
+                modalBottomSheet.show(supportFragmentManager, DetailsSheetFragment.TAG)
             }
 
             // Re-enable camera controls
