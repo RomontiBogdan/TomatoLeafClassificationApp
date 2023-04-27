@@ -5,26 +5,28 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Matrix
+import android.graphics.BitmapFactory
+import android.media.ThumbnailUtils
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityCameraBinding
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.tflite.client.TfLiteInitializationOptions
-import com.google.android.gms.tflite.java.TfLite
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import com.example.tomatoleafdiseaseclassificationapp.fragments.DetailsSheetFragment
+import com.example.tomatoleafdiseaseclassificationapp.ml.LeafResNet50
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.concurrent.ExecutorService
+import kotlin.math.min
 import kotlin.random.Random
 
 
@@ -33,186 +35,96 @@ class CameraActivity : AppCompatActivity() {
 
     private lateinit var activityCameraBinding: ActivityCameraBinding
 
-    private lateinit var bitmapBuffer: Bitmap
+    private var imageCapture: ImageCapture? = null
+    private lateinit var cameraExecutor: ExecutorService
 
-    private val executor = Executors.newSingleThreadExecutor()
     private val permissions = listOf(Manifest.permission.CAMERA)
     private val permissionsRequestCode = Random.nextInt(0, 10000)
 
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
-    private val isFrontFacing
-        get() = lensFacing == CameraSelector.LENS_FACING_FRONT
 
-    private var pauseAnalysis = false
-    private var imageRotationDegrees: Int = 0
-    private var useGpu = false;
-
-    // Initialize TFLite once. Must be called before creating the classifier
-    private val initializeTask: Task<Void> by lazy {
-        TfLite.initialize(
-            this,
-            TfLiteInitializationOptions.builder()
-                .setEnableGpuDelegateSupport(true)
-                .build()
-        ).continueWithTask { task ->
-            if (task.isSuccessful) {
-                useGpu = true;
-                return@continueWithTask Tasks.forResult(null)
-            } else {
-                // Fallback to initialize interpreter without GPU
-                return@continueWithTask TfLite.initialize(this)
-            }
-        }
-            .addOnFailureListener {
-                Log.e(TAG, "TFLite in Play Services failed to initialize.", it)
-            }
-    }
-//    private var classifier: ImageClassificationHelper? = null
+    private var imageSize = 224
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         activityCameraBinding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(activityCameraBinding.root)
 
-        // Initialize TFLite asynchronously
-        initializeTask
-            .addOnSuccessListener {
-                Log.d(TAG, "TFLite in Play Services initialized successfully.")
-//                classifier = ImageClassificationHelper(this, MAX_REPORT, useGpu)
-            }
+        activityCameraBinding.cameraCaptureButton.setOnClickListener { capturePhoto() }
 
-        activityCameraBinding.cameraCaptureButton.setOnClickListener {
-            // Disable all camera controls
-            it.isEnabled = false
-            if (pauseAnalysis) {
-                // If image analysis is in paused state, resume it
-                pauseAnalysis = false
-//                activityCameraBinding.imagePredicted.visibility = View.GONE
-            } else {
-                // Otherwise, pause image analysis and freeze image
-                pauseAnalysis = true
-                val matrix =
-                    Matrix().apply {
-                        postRotate(imageRotationDegrees.toFloat())
-                        if (isFrontFacing) postScale(-1f, 1f)
+    }
+
+    private fun ImageProxy.toBitmap(): Bitmap {
+        val buffer = planes[0].buffer
+        buffer.rewind()
+        val bytes = ByteArray(buffer.capacity())
+        buffer.get(bytes)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
+    private fun capturePhoto() {
+        val imageCapture = imageCapture ?: return
+
+        imageCapture.takePicture(
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    super.onCaptureSuccess(image)
+                    var bitmapImage = image.toBitmap()
+                    val dimension = min(image.width, image.height)
+                    bitmapImage = ThumbnailUtils.extractThumbnail(bitmapImage, dimension, dimension)
+//                    imageView.setImageBitmap(image)
+
+                    bitmapImage = Bitmap.createScaledBitmap(bitmapImage, imageSize, imageSize, false)
+                    val result = classifyImage(bitmapImage)
+
+                    val bundle = Bundle()
+                    bundle.apply {
+                        putString("result", result)
+                        putParcelable("image", bitmapImage)
                     }
-                val uprightImage =
-                    Bitmap.createBitmap(
-                        bitmapBuffer,
-                        0,
-                        0,
-                        bitmapBuffer.width,
-                        bitmapBuffer.height,
-                        matrix,
-                        true
-                    )
-//                activityCameraBinding.imagePredicted.setImageBitmap(uprightImage)
-//                activityCameraBinding.imagePredicted.visibility = View.VISIBLE
-                val modalBottomSheet = DetailsSheetFragment()
-                modalBottomSheet.show(supportFragmentManager, DetailsSheetFragment.TAG)
+                    val modalBottomSheet = DetailsSheetFragment()
+                    modalBottomSheet.arguments = bundle
+                    modalBottomSheet.show(supportFragmentManager, DetailsSheetFragment.TAG)
+                }
             }
-
-            // Re-enable camera controls
-            it.isEnabled = true
-        }
+        )
     }
 
     override fun onDestroy() {
-        // Terminate all outstanding analyzing jobs (if there is any).
-        executor.apply {
-            shutdown()
-            awaitTermination(1000, TimeUnit.MILLISECONDS)
-        }
-        // Release TFLite resources
-//        classifier?.close()
         super.onDestroy()
+        cameraExecutor.shutdown()
     }
 
     /** Declare and bind preview and analysis use cases */
     @SuppressLint("UnsafeExperimentalUsageError")
-    private fun bindCameraUseCases() =
-        activityCameraBinding.viewFinder.post {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-            cameraProviderFuture.addListener(
-                {
-                    // Camera provider is now guaranteed to be available
-                    val cameraProvider = cameraProviderFuture.get()
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-                    // Set up the view finder use case to display camera preview
-                    val preview =
-                        Preview.Builder()
-                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                            .setTargetRotation(activityCameraBinding.viewFinder.display.rotation)
-                            .build()
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-                    // Set up the image analysis use case which will process frames in real time
-                    val imageAnalysis =
-                        ImageAnalysis.Builder()
-                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                            .setTargetRotation(activityCameraBinding.viewFinder.display.rotation)
-                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-                            .build()
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(activityCameraBinding.viewFinder.surfaceProvider)
+                }
 
-                    var frameCounter = 0
-                    var lastFpsTimestamp = System.currentTimeMillis()
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build()
 
-                    imageAnalysis.setAnalyzer(
-                        executor,
-                        ImageAnalysis.Analyzer { image ->
-                            if (!::bitmapBuffer.isInitialized) {
-                                // The image rotation and RGB image buffer are initialized only once
-                                // the analyzer has started running
-                                imageRotationDegrees = image.imageInfo.rotationDegrees
-                                bitmapBuffer =
-                                    Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-                            }
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-                            // Early exit: image analysis is in paused state, or TFLite is not initialized
-                            if (pauseAnalysis) {
-                                image.close()
-                                return@Analyzer
-                            }
-
-                            // Copy out RGB bits to our shared buffer
-                            image.use { bitmapBuffer.copyPixelsFromBuffer(image.planes[0].buffer) }
-
-                            // Perform the image classification for the current frame
-//                            val recognitions = classifier?.classify(bitmapBuffer, imageRotationDegrees)
-
-//                            reportRecognition(recognitions)
-
-                            // Compute the FPS of the entire pipeline
-                            val frameCount = 10
-                            if (++frameCounter % frameCount == 0) {
-                                frameCounter = 0
-                                val now = System.currentTimeMillis()
-                                val delta = now - lastFpsTimestamp
-                                val fps = 1000 * frameCount.toFloat() / delta
-                                Log.d(TAG, "FPS: ${"%.02f".format(fps)}")
-                                lastFpsTimestamp = now
-                            }
-                        }
-                    )
-
-                    // Create a new camera selector each time, enforcing lens facing
-                    val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-
-                    // Apply declared configs to CameraX using the same lifecycle owner
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        this as LifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageAnalysis
-                    )
-
-                    // Use the camera object to link our preview use case with the view
-                    preview.setSurfaceProvider(activityCameraBinding.viewFinder.surfaceProvider)
-                },
-                ContextCompat.getMainExecutor(this)
-            )
-        }
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+            } catch(exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
+            }
+        }, ContextCompat.getMainExecutor(this))
+    }
 
     override fun onResume() {
         super.onResume()
@@ -221,7 +133,7 @@ class CameraActivity : AppCompatActivity() {
         if (!hasPermissions(this)) {
             ActivityCompat.requestPermissions(this, permissions.toTypedArray(), permissionsRequestCode)
         } else {
-            bindCameraUseCases()
+            startCamera()
         }
     }
 
@@ -232,7 +144,7 @@ class CameraActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == permissionsRequestCode && hasPermissions(this)) {
-            bindCameraUseCases()
+            startCamera()
         } else {
             finish() // If we don't have the required permissions, we can't run
         }
@@ -244,8 +156,67 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
 
+    fun classifyImage(image: Bitmap): String {
+        try {
+            val model: LeafResNet50 = LeafResNet50.newInstance(applicationContext)
+
+            // Creates inputs for reference.
+            val inputFeature0 =
+                TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+            val byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3)
+            byteBuffer.order(ByteOrder.nativeOrder())
+            val intValues = IntArray(imageSize * imageSize)
+            image.getPixels(intValues, 0, image.width, 0, 0, image.width, image.height)
+            var pixel = 0
+            //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
+            for (i in 0 until imageSize) {
+                for (j in 0 until imageSize) {
+                    val `val` = intValues[pixel++] // RGB
+                    byteBuffer.putFloat((`val` shr 16 and 0xFF) * (1f / 1))
+                    byteBuffer.putFloat((`val` shr 8 and 0xFF) * (1f / 1))
+                    byteBuffer.putFloat((`val` and 0xFF) * (1f / 1))
+                }
+            }
+            inputFeature0.loadBuffer(byteBuffer)
+
+            // Runs model inference and gets result.
+            val outputs: LeafResNet50.Outputs = model.process(inputFeature0)
+            val outputFeature0: TensorBuffer = outputs.outputFeature0AsTensorBuffer
+            val confidences = outputFeature0.floatArray
+            // find the index of the class with the biggest confidence.
+            var maxPos = 0
+            var maxConfidence = 0f
+            for (i in confidences.indices) {
+                if (confidences[i] > maxConfidence) {
+                    maxConfidence = confidences[i]
+                    maxPos = i
+                }
+            }
+            val classes = arrayOf(
+                "Bacterial spot",
+                "Early blight",
+                "Healthy",
+                "Late blight",
+                "Leaf mold",
+                "Septoria leaf spot",
+                "Spider mites",
+                "Target spot",
+                "Mosaic virus",
+                "Yellow leaf curl virus"
+            )
+            val result = classes[maxPos]
+
+            model.close()
+
+            return result
+        } catch (e: IOException) {
+            // TODO Handle the exception
+        }
+
+        return null.toString()
+    }
+
     companion object {
         private val TAG = CameraActivity::class.java.simpleName
-        private const val MAX_REPORT = 3
     }
 }
