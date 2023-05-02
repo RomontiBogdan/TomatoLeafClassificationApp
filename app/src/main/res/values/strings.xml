@@ -13,7 +13,13 @@
     <string name="organic_treatment">Organic</string>
     <string name="bio_treatment">Bio</string>
     <string name="capture_button_alt">Capture</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="register">REGISTER</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="signup_login_hint">Already have an account? Sign In</string>
+    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="register_confirm_pass_hint">Confirm password</string>
     <string name="not_logged_in">Not logged in</string>
+    <string name="continue_as_guest">Continue as guest</string>
 </resources>
