@@ -26,10 +26,11 @@ class LoginActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }
 
-            binding.textViewGuest.setOnClickListener {
+        binding.textViewGuest.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+
         binding.loginButton.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val pass = binding.editTextPassword.text.toString()

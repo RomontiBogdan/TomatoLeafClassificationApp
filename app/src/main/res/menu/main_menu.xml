@@ -6,8 +6,8 @@
         android:title="subheader">
     <menu>
         <item
-            android:id="@+id/logoutMenuButton"
-            android:icon="@drawable/ic_baseline_expand_less_24"
+            android:id="@+id/nav_logout"
+
             android:title="Log Out"
             android:checkable="true"
             app:showAsAction="ifRoom"/>
