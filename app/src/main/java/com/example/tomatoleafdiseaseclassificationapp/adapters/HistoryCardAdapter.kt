@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.databinding.CardHistoryBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 
-class HistoryCardAdapter(var historyList: List<HistoryCardModel>,) : RecyclerView.Adapter<HistoryCardAdapter.HistoryHolder>() {
+class HistoryCardAdapter(var historyList: List<HistoryCardModel>) : RecyclerView.Adapter<HistoryCardAdapter.HistoryHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryHolder {
         val itemBinding= CardHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)

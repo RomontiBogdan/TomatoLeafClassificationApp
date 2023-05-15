@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityMainBinding
@@ -53,12 +54,17 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
         updateUi(firebaseAuth.currentUser)
+        if(firebaseAuth.currentUser == null){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun updateUi(currentUser : FirebaseUser?) {
         if (currentUser == null) {
-
+            binding.cardHistory.root.visibility = View.GONE
         } else {
+            binding.cardHistory.root.visibility = View.VISIBLE
             val navHeaderBinding =
                 HeaderNavigationDrawerBinding.bind(binding.navigationView.getHeaderView(0))
             navHeaderBinding.loggedUserHeader.text = currentUser.email

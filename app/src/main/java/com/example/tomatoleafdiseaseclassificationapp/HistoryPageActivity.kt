@@ -1,18 +1,19 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.adapters.HistoryCardAdapter
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityHistoryPageBinding
-import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityLoginBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 class HistoryPageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryPageBinding
@@ -30,7 +31,9 @@ class HistoryPageActivity : AppCompatActivity() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         val cardAdapter = HistoryCardAdapter(cardModelArrayList)
         binding.recyclerView.adapter = cardAdapter
-        binding.recyclerView.layoutManager = layoutManager
+        val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
+
+        binding.recyclerView.layoutManager = mLayoutManager
         readData()
     }
 
