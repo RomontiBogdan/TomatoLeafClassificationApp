@@ -75,8 +75,8 @@ class CameraActivity : AppCompatActivity() {
                     bitmapImage = ThumbnailUtils.extractThumbnail(bitmapImage, dimension, dimension)
 //                    imageView.setImageBitmap(image)
 
-                    bitmapImage = Bitmap.createScaledBitmap(bitmapImage, imageSize, imageSize, false)
-                    val result = classifyImage(bitmapImage)
+                    val scaledBitmap = Bitmap.createScaledBitmap(bitmapImage, imageSize, imageSize, false)
+                    val result = classifyImage(scaledBitmap)
 
                     val bundle = Bundle()
                     bundle.apply {

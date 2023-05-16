@@ -22,4 +22,8 @@
     <string name="register_confirm_pass_hint">Confirm password</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="continue_as_guest">Continue as guest</string>
+
+    <string name="temp_images_dir">temp_images</string>
+    <string name="temp_image">temp_image.jpg</string>
+    <string name="authorities">com.example.fileprovider</string>
 </resources>

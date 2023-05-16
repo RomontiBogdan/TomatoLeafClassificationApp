@@ -1,24 +1,30 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
+import androidx.core.content.FileProvider
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityMainBinding
 import com.example.tomatoleafdiseaseclassificationapp.databinding.HeaderNavigationDrawerBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
+import java.io.File
 
 
 class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNavigationItemSelectedListener{
     private lateinit var binding: ActivityMainBinding
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,14 +36,27 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
         binding.cardExplore.cardImageView.setImageResource(R.drawable.explore_icon)
 
         binding.cardHistory.root.setOnClickListener {
+//            if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
+//                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                startActivityForResult(cameraIntent, 3)
+//            }
+//            else{
+//                requestPermission.launch(android.Manifest.permission.CAMERA)
+//            }
             val intent = Intent(this, HistoryPageActivity::class.java)
             startActivity(intent)
         }
 
-        binding.cameraIcon.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.cameraIcon.setOnClickListener {
+//            val intent = Intent(this, CameraActivity::class.java)
+//            startActivity(intent)
+//        }
+        val tempImageUri = initTempUri()
+
+        registerTakePictureLauncher(tempImageUri)
+        registerUploadPictureLauncher()
+
+
 
         binding.toolbar.setNavigationOnClickListener {
             binding.drawerLayoutMenu.open()
@@ -81,5 +100,55 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
         binding.drawerLayoutMenu.close()
         return true
     }
+
+    private fun initTempUri(): Uri {
+        //gets the temp_images dir
+        val tempImagesDir = File(
+            applicationContext.filesDir, //this function gets the external cache dir
+            getString(R.string.temp_images_dir)) //gets the directory for the temporary images dir
+
+        tempImagesDir.mkdir() //Create the temp_images dir
+
+        //Creates the temp_image.jpg file
+        val tempImage = File(
+            tempImagesDir, //prefix the new abstract path with the temporary images dir path
+            getString(R.string.temp_image)) //gets the abstract temp_image file name
+
+        //Returns the Uri object to be used with ActivityResultLauncher
+        return FileProvider.getUriForFile(
+            applicationContext,
+            getString(R.string.authorities),
+            tempImage)
+    }
+
+    private fun registerTakePictureLauncher(path: Uri) {
+        val button = binding.cameraIcon
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()){
+            val intent = Intent(this, DiseaseInfoActivity::class.java)
+            intent.putExtra("imagePath", path.toString())
+            startActivity(intent)
+        }
+        button.setOnClickListener {
+            resultLauncher.launch(path) //launches the activity here
+
+        }
+    }
+
+    private fun registerUploadPictureLauncher() {
+        val button = binding.galeryIcon
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
+            val intent = Intent(this, DiseaseInfoActivity::class.java)
+            intent.putExtra("imagePath", it.toString())
+            startActivity(intent)
+        }
+
+        //Launches the camera when button is pressed.
+        button.setOnClickListener {
+            resultLauncher.launch("image/*") //launches the activity here
+
+        }
+    }
+
+
 }
 
