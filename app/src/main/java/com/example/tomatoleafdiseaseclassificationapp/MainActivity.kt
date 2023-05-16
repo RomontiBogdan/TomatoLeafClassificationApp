@@ -33,24 +33,17 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         binding.cardHistory.cardImageView.setImageResource(R.drawable.history_icon)
+        binding.cardHistory.cardTitle.text = getString(R.string.historyCardTitle)
+        binding.cardHistory.cardDescr.text = getString(R.string.historyCardDescr)
         binding.cardExplore.cardImageView.setImageResource(R.drawable.explore_icon)
+        binding.cardExplore.cardTitle.text = getString(R.string.exploreCardTitle)
+        binding.cardExplore.cardDescr.text = getString(R.string.cardExploreDescr)
 
         binding.cardHistory.root.setOnClickListener {
-//            if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
-//                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                startActivityForResult(cameraIntent, 3)
-//            }
-//            else{
-//                requestPermission.launch(android.Manifest.permission.CAMERA)
-//            }
             val intent = Intent(this, HistoryPageActivity::class.java)
             startActivity(intent)
         }
 
-//        binding.cameraIcon.setOnClickListener {
-//            val intent = Intent(this, CameraActivity::class.java)
-//            startActivity(intent)
-//        }
         val tempImageUri = initTempUri()
 
         registerTakePictureLauncher(tempImageUri)

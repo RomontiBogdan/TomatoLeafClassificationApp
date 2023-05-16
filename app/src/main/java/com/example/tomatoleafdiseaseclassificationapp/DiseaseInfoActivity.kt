@@ -31,6 +31,7 @@ import java.io.IOException
 import java.lang.IllegalArgumentException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.math.min
 
 
 class DiseaseInfoActivity : AppCompatActivity() {
@@ -58,12 +59,12 @@ class DiseaseInfoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         runOnUiThread {
-            val intent = intent;
-            val image_path = intent.getStringExtra("imagePath");
-            val fileUri = Uri.parse(image_path)
+            val intent = intent
+            val imagePath = intent.getStringExtra("imagePath")
+            val fileUri = Uri.parse(imagePath)
             val source = ImageDecoder.createSource(contentResolver, fileUri)
             val bitmap = ImageDecoder.decodeBitmap(source)
-            val dimension = Math.min(bitmap.width, bitmap.height)
+            val dimension = min(bitmap.width, bitmap.height)
             val thumbnail = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
 
             val bitmapImage = Bitmap.createScaledBitmap(thumbnail, imageSize, imageSize, false)
@@ -89,16 +90,16 @@ class DiseaseInfoActivity : AppCompatActivity() {
         tabLayout = binding.tabLayout
         viewPager2 = binding.viewPager2
 
-        tabLayout.addTab(tabLayout.newTab().setText("Conventional"));
-        tabLayout.addTab(tabLayout.newTab().setText("Bio"));
-        tabLayout.addTab(tabLayout.newTab().setText("Organic"));
+        tabLayout.addTab(tabLayout.newTab().setText("Conventional"))
+        tabLayout.addTab(tabLayout.newTab().setText("Bio"))
+        tabLayout.addTab(tabLayout.newTab().setText("Organic"))
 
         val fragmentManager = supportFragmentManager
         val adapter = TabPagerAdapter(fragmentManager, lifecycle)
         viewPager2.adapter = adapter
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager2.setCurrentItem(tab.position)
+                viewPager2.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -150,7 +151,7 @@ class DiseaseInfoActivity : AppCompatActivity() {
         }
     }
 
-    fun classifyImage(image: Bitmap): String {
+    private fun classifyImage(image: Bitmap): String {
         try {
             val model: LeafResNet50 = LeafResNet50.newInstance(applicationContext)
 
@@ -210,11 +211,12 @@ class DiseaseInfoActivity : AppCompatActivity() {
         return null.toString()
     }
 
-    fun addToHistory(disease : String){
+    private fun addToHistory(disease : String){
         if (userId != null) {
             val scannedDisease = hashMapOf(
                 "date" to FieldValue.serverTimestamp(),
-                "disease_name" to disease
+                "disease_name" to disease,
+                "rating" to 0
             )
             Firebase.firestore.collection("Users/$userId/history")
                 .add(scannedDisease).addOnSuccessListener {

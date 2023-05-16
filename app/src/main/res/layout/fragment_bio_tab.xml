@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.BioTabFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Bio fragment" />
+        android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/bioTreatmentImageView"
+        android:layout_width="130dp"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/bio_treatment" />
+
+    <TextView
+        android:id="@+id/bioTreatmentTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bio fragment"
+        android:layout_margin="10dp"
+        android:layout_toEndOf="@id/bioTreatmentImageView"/>
+
+    </RelativeLayout>
 
 </FrameLayout>

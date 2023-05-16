@@ -5,10 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".fragments.OrganicTabFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="organic tab" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/organicTreatmentImageView"
+            android:layout_width="130dp"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/organic_treatment" />
+
+        <TextView
+            android:id="@+id/organicTreatmentTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bio fragment"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/organicTreatmentImageView"/>
+
+    </RelativeLayout>
 
 </FrameLayout>

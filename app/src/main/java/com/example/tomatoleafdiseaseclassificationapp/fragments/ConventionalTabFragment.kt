@@ -15,7 +15,7 @@ class ConventionalTabFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         fragmentConventionalTabBinding = FragmentConventionalTabBinding.inflate(inflater, container, false)
         return fragmentConventionalTabBinding.root
     }

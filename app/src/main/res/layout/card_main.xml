@@ -24,14 +24,14 @@
             android:layout_marginLeft="50dp">
 
             <TextView
-                android:text="Plumping"
+                android:id="@+id/card_title"
                 android:textSize="25sp"
                 android:textStyle="bold" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
 
             <TextView
+                android:id="@+id/card_descr"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="200+ Skilled plumbers ready to work"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -41,7 +41,7 @@
         android:id="@+id/card_image_view"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/camera_icon"
+        android:src="@drawable/add_image"
         android:layout_centerVertical="true"
         android:elevation="13dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>

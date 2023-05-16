@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityTreatmentBinding
-import com.example.tomatoleafdiseaseclassificationapp.databinding.FragmentDetailsSheetBinding
 
 import android.os.Build
 import android.transition.AutoTransition

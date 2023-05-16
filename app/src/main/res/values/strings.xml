@@ -26,4 +26,8 @@
     <string name="temp_images_dir">temp_images</string>
     <string name="temp_image">temp_image.jpg</string>
     <string name="authorities">com.example.fileprovider</string>
+    <string name="historyCardTitle">History</string>
+    <string name="historyCardDescr">View your scan history and rate treatments</string>
+    <string name="exploreCardTitle">Explore</string>
+    <string name="cardExploreDescr">Learn about diseases without the need of scanning</string>
 </resources>

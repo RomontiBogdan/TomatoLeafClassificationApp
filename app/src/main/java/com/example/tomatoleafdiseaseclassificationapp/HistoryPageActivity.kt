@@ -1,7 +1,9 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,6 +15,8 @@ import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 class HistoryPageActivity : AppCompatActivity() {
@@ -28,8 +32,13 @@ class HistoryPageActivity : AppCompatActivity() {
         binding = ActivityHistoryPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         val cardAdapter = HistoryCardAdapter(cardModelArrayList)
+        cardAdapter.setOnRatingBarChangeListener(object : HistoryCardAdapter.OnRatingBarChangeListener{
+            override fun onRatingBarChange(rating: Float, position: Int) {
+                addRatingToScan(cardAdapter.getId(position), rating.toLong())
+            }
+
+        })
         binding.recyclerView.adapter = cardAdapter
         val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
 
@@ -37,16 +46,30 @@ class HistoryPageActivity : AppCompatActivity() {
         readData()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun addRatingToScan(docId: String, rating : Long) {
+        db.collection("Users/$userId/history").document(docId).update("rating", rating)
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged", "SimpleDateFormat")
     private fun readData() {
         db.collection("Users/$userId/history").get()
             .addOnSuccessListener { queryDocumentSnapshots ->
                 if (!queryDocumentSnapshots.isEmpty) {
                     val list = queryDocumentSnapshots.documents
                     for (item in list) {
-                        val card = HistoryCardModel(
-                            item.data?.get("disease_name") as String,
-                            item.data?.get("date") as Timestamp
-                        )
+                        val diseaseName = item.data?.get("disease_name") as String
+                        val timestamp = item.data?.get("date") as Timestamp
+                        val sdf = SimpleDateFormat("dd/MM/yyyy")
+                        val date = sdf.format(timestamp.toDate()).toString()
+                        val card = HistoryCardModel(diseaseName, date, item.id)
+                        if (item.data?.containsKey("rating") == true){
+                            val rating = item.data?.get("rating") as Long
+                            card.rating = rating.toInt()
+                        }
+
                         cardModelArrayList.add(card)
                     }
                     binding.recyclerView.adapter?.notifyDataSetChanged()
@@ -63,9 +86,5 @@ class HistoryPageActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fail to get the data.", Toast.LENGTH_SHORT)
                     .show()
             }
-    }
-
-    private fun removeItemDatabase(docId: String){
-        db.collection("Users/$userId/Cards").document(docId).delete()
     }
 }
