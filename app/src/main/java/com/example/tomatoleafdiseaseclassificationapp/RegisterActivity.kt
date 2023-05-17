@@ -1,9 +1,9 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -21,25 +21,25 @@ class RegisterActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        binding.registerButton.setOnClickListener{
+        binding.registerButton.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val pass = binding.editTextPassword.text.toString()
             val confirmPass = binding.editTextConfirmPassword.text.toString()
 
-            if(email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()){
-                if(pass.equals(confirmPass)){
+            if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()) {
+                if (pass == confirmPass) {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
-                        if(it.isSuccessful){
+                        if (it.isSuccessful) {
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
-                        }else{
+                        } else {
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                         }
                     }
-                }else{
+                } else {
                     Toast.makeText(this, "Password is not matching", Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "Error: empty fields", Toast.LENGTH_SHORT).show()
             }
         }

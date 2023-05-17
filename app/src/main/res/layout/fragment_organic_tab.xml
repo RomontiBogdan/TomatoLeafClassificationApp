@@ -21,8 +21,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bio fragment"
+            android:layout_centerVertical="true"
             android:layout_margin="10dp"
             android:layout_toEndOf="@id/organicTreatmentImageView"/>
+
+        <Button
+            android:id="@+id/organicTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/organicTreatmentImageView"
+            android:text="@string/save_to_history_button" />
 
     </RelativeLayout>
 

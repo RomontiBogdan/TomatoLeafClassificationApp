@@ -8,22 +8,23 @@ import com.example.tomatoleafdiseaseclassificationapp.fragments.BioTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.fragments.ConventionalTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.fragments.OrganicTabFragment
 
+
 class TabPagerAdapter(fragmentManager: FragmentManager?, lifecycle: Lifecycle?) :
     FragmentStateAdapter(fragmentManager!!, lifecycle!!) {
-
+    private val mFragmentList: ArrayList<Fragment> = ArrayList()
     override fun createFragment(position: Int): Fragment {
-        when (position) {
-            1 -> {
-                return BioTabFragment()
-            }
-            2 -> {
-                return OrganicTabFragment()
-            }
-        }
-        return ConventionalTabFragment()
+        return mFragmentList[position]
     }
 
     override fun getItemCount(): Int {
-        return 3
+        return mFragmentList.size
+    }
+
+    fun addFragment(fragment: Fragment) {
+        mFragmentList.add(fragment)
+    }
+
+    fun removeFragment(position: Int) {
+        mFragmentList.removeAt(position)
     }
 }

@@ -10,20 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/bioTreatmentImageView"
-        android:layout_width="130dp"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/bio_treatment" />
+        <ImageView
+            android:id="@+id/bioTreatmentImageView"
+            android:layout_width="130dp"
+            android:layout_height="170dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/bio_treatment" />
 
-    <TextView
-        android:id="@+id/bioTreatmentTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bio fragment"
-        android:layout_margin="10dp"
-        android:layout_toEndOf="@id/bioTreatmentImageView"/>
+        <TextView
+            android:id="@+id/bioTreatmentTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bio fragment"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/bioTreatmentImageView"/>
+
+        <Button
+            android:id="@+id/bioTabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/bioTreatmentImageView"
+            android:text="@string/save_to_history_button" />
 
     </RelativeLayout>
 

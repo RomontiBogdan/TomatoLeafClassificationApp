@@ -30,4 +30,7 @@
     <string name="historyCardDescr">View your scan history and rate treatments</string>
     <string name="exploreCardTitle">Explore</string>
     <string name="cardExploreDescr">Learn about diseases without the need of scanning</string>
+    <string name="save_to_history_button">Save to history</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

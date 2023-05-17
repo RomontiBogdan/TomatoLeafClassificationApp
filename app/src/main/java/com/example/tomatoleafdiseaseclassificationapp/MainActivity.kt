@@ -20,7 +20,8 @@ import com.google.firebase.auth.FirebaseUser
 import java.io.File
 
 
-class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), AuthStateListener,
+    NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
 
 
@@ -66,13 +67,13 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
         updateUi(firebaseAuth.currentUser)
-        if(firebaseAuth.currentUser == null){
+        if (firebaseAuth.currentUser == null) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun updateUi(currentUser : FirebaseUser?) {
+    private fun updateUi(currentUser: FirebaseUser?) {
         if (currentUser == null) {
             binding.cardHistory.root.visibility = View.GONE
         } else {
@@ -87,7 +88,8 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_logout -> {
-                Log.d("DRAWER" , "LogOut")}
+                Log.d("DRAWER", "LogOut")
+            }
         }
         //close navigation drawer
         binding.drawerLayoutMenu.close()
@@ -98,25 +100,28 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
         //gets the temp_images dir
         val tempImagesDir = File(
             applicationContext.filesDir, //this function gets the external cache dir
-            getString(R.string.temp_images_dir)) //gets the directory for the temporary images dir
+            getString(R.string.temp_images_dir)
+        ) //gets the directory for the temporary images dir
 
         tempImagesDir.mkdir() //Create the temp_images dir
 
         //Creates the temp_image.jpg file
         val tempImage = File(
             tempImagesDir, //prefix the new abstract path with the temporary images dir path
-            getString(R.string.temp_image)) //gets the abstract temp_image file name
+            getString(R.string.temp_image)
+        ) //gets the abstract temp_image file name
 
         //Returns the Uri object to be used with ActivityResultLauncher
         return FileProvider.getUriForFile(
             applicationContext,
             getString(R.string.authorities),
-            tempImage)
+            tempImage
+        )
     }
 
     private fun registerTakePictureLauncher(path: Uri) {
         val button = binding.cameraIcon
-        val resultLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()){
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) {
             val intent = Intent(this, DiseaseInfoActivity::class.java)
             intent.putExtra("imagePath", path.toString())
             startActivity(intent)
@@ -129,7 +134,7 @@ class MainActivity : AppCompatActivity(), AuthStateListener, NavigationView.OnNa
 
     private fun registerUploadPictureLauncher() {
         val button = binding.galeryIcon
-        val resultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             val intent = Intent(this, DiseaseInfoActivity::class.java)
             intent.putExtra("imagePath", it.toString())
             startActivity(intent)

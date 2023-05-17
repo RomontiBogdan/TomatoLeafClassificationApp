@@ -18,6 +18,10 @@ import androidx.cardview.widget.CardView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.tomatoleafdiseaseclassificationapp.adapters.TabPagerAdapter
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityDiseaseInfoBinding
+import com.example.tomatoleafdiseaseclassificationapp.fragments.AlternativeTabFragment
+import com.example.tomatoleafdiseaseclassificationapp.fragments.BioTabFragment
+import com.example.tomatoleafdiseaseclassificationapp.fragments.ConventionalTabFragment
+import com.example.tomatoleafdiseaseclassificationapp.fragments.OrganicTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.ml.LeafResNet50
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +32,6 @@ import com.google.firebase.ktx.Firebase
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.min
@@ -51,12 +54,15 @@ class DiseaseInfoActivity : AppCompatActivity() {
     private var db = FirebaseFirestore.getInstance()
     private var user = FirebaseAuth.getInstance().currentUser
     private var userId = user?.uid
+    private lateinit var disease: String
+    private lateinit var tabAdapter : TabPagerAdapter
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDiseaseInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         runOnUiThread {
             val intent = intent
@@ -69,34 +75,42 @@ class DiseaseInfoActivity : AppCompatActivity() {
 
             val bitmapImage = Bitmap.createScaledBitmap(thumbnail, imageSize, imageSize, false)
             val softwareBitmap: Bitmap = bitmapImage.copy(Bitmap.Config.ARGB_8888, false)
-            val result = classifyImage(softwareBitmap)
+            disease = classifyImage(softwareBitmap)
 
             binding.imageView.setImageBitmap(thumbnail)
-            binding.diseaseTitle.text = result
+            binding.diseaseTitle.text = disease
 
-            db.document("Treatments/Tomato/Diseases/$result")
+            db.document("Treatments/Tomato/Diseases/$disease")
                 .get()
                 .addOnSuccessListener {
                     binding.causesDescr.text = it.get("Causes").toString()
                     binding.symptomsDescr.text = it.get("Symptoms").toString()
+                    if (it.contains("Alternative")) {
+                        tabLayout.removeAllTabs()
+                        tabAdapter.addFragment(AlternativeTabFragment(it.get("Alternative").toString()))
+                        tabLayout.addTab(tabLayout.newTab().setText("Alternative"))
+                    }
+                    else{
+                        tabLayout.removeAllTabs()
+                        tabLayout.addTab(tabLayout.newTab().setText("Conventional"))
+                        tabLayout.addTab(tabLayout.newTab().setText("Bio"))
+                        tabLayout.addTab(tabLayout.newTab().setText("Organic"))
+                        tabAdapter.addFragment(ConventionalTabFragment(it.get("Conventional").toString()))
+                        tabAdapter.addFragment(BioTabFragment(it.get("Bio").toString()))
+                        tabAdapter.addFragment(OrganicTabFragment(it.get("Organic").toString()))
+                    }
                 }
                 .addOnFailureListener { exception ->
 
                 }
-            if(userId != null)
-                addToHistory(result)
         }
 
         tabLayout = binding.tabLayout
         viewPager2 = binding.viewPager2
 
-        tabLayout.addTab(tabLayout.newTab().setText("Conventional"))
-        tabLayout.addTab(tabLayout.newTab().setText("Bio"))
-        tabLayout.addTab(tabLayout.newTab().setText("Organic"))
-
         val fragmentManager = supportFragmentManager
-        val adapter = TabPagerAdapter(fragmentManager, lifecycle)
-        viewPager2.adapter = adapter
+        tabAdapter = TabPagerAdapter(fragmentManager, lifecycle)
+        viewPager2.adapter = tabAdapter
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager2.currentItem = tab.position
@@ -124,19 +138,17 @@ class DiseaseInfoActivity : AppCompatActivity() {
         causesArrowButton = binding.causesArrowButton
         causesHiddenView = binding.causesHiddenView
 
-        set_expandable(treatmentArrowButton, treatmentHiddenView, treatmentCardview)
-        set_expandable(symptomsArrowButton, symptomsHiddenView, symptomsCardview)
-        set_expandable(causesArrowButton, causesHiddenView, causesCardview)
-
+        setExpandable(treatmentArrowButton, treatmentHiddenView, treatmentCardview)
+        setExpandable(symptomsArrowButton, symptomsHiddenView, symptomsCardview)
+        setExpandable(causesArrowButton, causesHiddenView, causesCardview)
 
 
     }
 
-    private fun set_expandable(arrow : ImageButton, hiddenView : LinearLayout, cardView : CardView) {
+    private fun setExpandable(arrow: ImageButton, hiddenView: LinearLayout, cardView: CardView) {
         arrow.setOnClickListener {
             // If the CardView is already expanded, set its visibility
             // to gone and change the expand less icon to expand more.
-            Log.d("EXPANDABLE","set_expandable() started")
             if (hiddenView.visibility == View.VISIBLE) {
                 // The transition of the hiddenView is carried out by the TransitionManager class.
                 // Here we use an object of the AutoTransition Class to create a default transition
@@ -211,11 +223,12 @@ class DiseaseInfoActivity : AppCompatActivity() {
         return null.toString()
     }
 
-    private fun addToHistory(disease : String){
+    fun addToHistory(treatment: String) {
         if (userId != null) {
             val scannedDisease = hashMapOf(
                 "date" to FieldValue.serverTimestamp(),
                 "disease_name" to disease,
+                "treatment" to treatment,
                 "rating" to 0
             )
             Firebase.firestore.collection("Users/$userId/history")
@@ -223,7 +236,6 @@ class DiseaseInfoActivity : AppCompatActivity() {
                 }
         } else throw IllegalArgumentException("")
     }
-
 
 
 }

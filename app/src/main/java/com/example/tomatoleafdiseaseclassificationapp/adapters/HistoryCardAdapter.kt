@@ -4,18 +4,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.R
 import com.example.tomatoleafdiseaseclassificationapp.databinding.CardHistoryBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 
-class HistoryCardAdapter(var historyList: List<HistoryCardModel>) : RecyclerView.Adapter<HistoryCardAdapter.HistoryHolder>() {
-    private lateinit var mListener : OnRatingBarChangeListener
+class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
+    RecyclerView.Adapter<HistoryCardAdapter.HistoryHolder>() {
+    private lateinit var mListener: OnRatingBarChangeListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryHolder {
-        val itemBinding= CardHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemBinding =
+            CardHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return HistoryHolder(itemBinding, mListener)
     }
@@ -36,7 +35,7 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) : RecyclerView
 
     }
 
-    fun setOnRatingBarChangeListener(listener: OnRatingBarChangeListener){
+    fun setOnRatingBarChangeListener(listener: OnRatingBarChangeListener) {
         mListener = listener
     }
 
@@ -44,13 +43,16 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) : RecyclerView
         return this.historyList[position].id
     }
 
-    inner class HistoryHolder(private val itemBinding: CardHistoryBinding, val listener: OnRatingBarChangeListener) : RecyclerView.ViewHolder(itemBinding.root){
+    inner class HistoryHolder(
+        private val itemBinding: CardHistoryBinding,
+        val listener: OnRatingBarChangeListener
+    ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(historyItem: HistoryCardModel) {
             itemBinding.cardHistoryTitle.text = historyItem.diseaseName
             itemBinding.cardHistoryDate.text = historyItem.date
-            if(historyItem.rating == 0)
+            if (historyItem.rating == 0)
                 itemBinding.ratingTextView.visibility = View.GONE
-            else{
+            else {
                 itemBinding.ratingBar.visibility = View.GONE
                 itemBinding.ratingTextView.text = historyItem.rating.toString()
             }

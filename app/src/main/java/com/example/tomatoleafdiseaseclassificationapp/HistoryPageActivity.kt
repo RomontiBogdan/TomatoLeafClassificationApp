@@ -3,11 +3,9 @@ package com.example.tomatoleafdiseaseclassificationapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.adapters.HistoryCardAdapter
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityHistoryPageBinding
@@ -16,13 +14,11 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
-import java.util.Date
 
 
 class HistoryPageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryPageBinding
     private var cardModelArrayList: ArrayList<HistoryCardModel> = ArrayList()
-    private lateinit var rvAdapter: HistoryCardAdapter
     private var db = FirebaseFirestore.getInstance()
     private var user = FirebaseAuth.getInstance().currentUser
     private var userId = user?.uid
@@ -33,7 +29,8 @@ class HistoryPageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val cardAdapter = HistoryCardAdapter(cardModelArrayList)
-        cardAdapter.setOnRatingBarChangeListener(object : HistoryCardAdapter.OnRatingBarChangeListener{
+        cardAdapter.setOnRatingBarChangeListener(object :
+            HistoryCardAdapter.OnRatingBarChangeListener {
             override fun onRatingBarChange(rating: Float, position: Int) {
                 addRatingToScan(cardAdapter.getId(position), rating.toLong())
             }
@@ -47,7 +44,7 @@ class HistoryPageActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun addRatingToScan(docId: String, rating : Long) {
+    private fun addRatingToScan(docId: String, rating: Long) {
         db.collection("Users/$userId/history").document(docId).update("rating", rating)
         binding.recyclerView.adapter?.notifyDataSetChanged()
 
@@ -65,7 +62,7 @@ class HistoryPageActivity : AppCompatActivity() {
                         val sdf = SimpleDateFormat("dd/MM/yyyy")
                         val date = sdf.format(timestamp.toDate()).toString()
                         val card = HistoryCardModel(diseaseName, date, item.id)
-                        if (item.data?.containsKey("rating") == true){
+                        if (item.data?.containsKey("rating") == true) {
                             val rating = item.data?.get("rating") as Long
                             card.rating = rating.toInt()
                         }
