@@ -85,6 +85,7 @@ class DiseaseInfoActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     binding.causesDescr.text = it.get("Causes").toString()
                     binding.symptomsDescr.text = it.get("Symptoms").toString()
+                    binding.diseaseDescr.text = it.get("Description").toString()
                     if (it.contains("Alternative")) {
                         tabLayout.removeAllTabs()
                         tabAdapter.addFragment(AlternativeTabFragment(it.get("Alternative").toString()))

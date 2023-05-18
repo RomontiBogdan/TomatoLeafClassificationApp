@@ -40,16 +40,6 @@
             android:textAppearance="?attr/textAppearanceTitleMedium" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/accuracy_placeholder"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?android:attr/textColorSecondary" />
-
-        <TextView
             android:id="@+id/diseaseDescr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,6 +92,20 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0">
 
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/treatment_image_view"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/treatment_icon"
+                    android:layout_centerVertical="true"
+                    android:elevation="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_bias="0.02"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
+
                 <TextView
                     android:id="@+id/treatment_Title"
                     android:layout_width="wrap_content"
@@ -113,8 +117,8 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/treatment_image_view"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
@@ -138,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -196,6 +201,20 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0">
 
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/symptoms_image_view"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/symptoms_icon"
+                    android:layout_centerVertical="true"
+                    android:elevation="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_bias="0.02"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
+
                 <TextView
                     android:id="@+id/symptoms_Title"
                     android:layout_width="wrap_content"
@@ -207,8 +226,8 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/symptoms_image_view"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
@@ -232,6 +251,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -278,9 +298,24 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/causes_image_view"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/causes_icon"
+                    android:layout_centerVertical="true"
+                    android:elevation="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_bias="0.02"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
+
 
                 <TextView
                     android:id="@+id/causes_Title"
@@ -293,8 +328,8 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/causes_image_view"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
@@ -318,6 +353,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
