@@ -1,6 +1,7 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.adapters.HistoryCardAdapter
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityHistoryPageBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,12 +37,30 @@ class HistoryPageActivity : AppCompatActivity() {
                 addRatingToScan(cardAdapter.getId(position), rating.toLong())
             }
 
+            override fun onItemClick(position: Int) {
+                showTreatmentDialog(cardAdapter.getDisease(position) ,cardAdapter.getTreatment(position))
+            }
+
         })
         binding.recyclerView.adapter = cardAdapter
         val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
 
         binding.recyclerView.layoutManager = mLayoutManager
         readData()
+    }
+
+    private fun showTreatmentDialog(diseaseName: String, treatment: String) {
+        db.document("Treatments/Tomato/Diseases/$diseaseName")
+            .get()
+            .addOnSuccessListener {
+                val treatmentDescription = it.get("$treatment").toString()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Disease info")
+                    .setMessage(treatmentDescription)
+                    .setPositiveButton( "Ok"){ _, _-> }
+                    .show()
+            }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -58,10 +78,11 @@ class HistoryPageActivity : AppCompatActivity() {
                     val list = queryDocumentSnapshots.documents
                     for (item in list) {
                         val diseaseName = item.data?.get("disease_name") as String
+                        val treatmentUsed = item.data?.get("treatment") as String
                         val timestamp = item.data?.get("date") as Timestamp
                         val sdf = SimpleDateFormat("dd/MM/yyyy")
                         val date = sdf.format(timestamp.toDate()).toString()
-                        val card = HistoryCardModel(diseaseName, date, item.id)
+                        val card = HistoryCardModel(diseaseName, treatmentUsed, date, item.id)
                         if (item.data?.containsKey("rating") == true) {
                             val rating = item.data?.get("rating") as Long
                             card.rating = rating.toInt()

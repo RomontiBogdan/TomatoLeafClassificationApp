@@ -33,6 +33,8 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
     interface OnRatingBarChangeListener {
         fun onRatingBarChange(rating: Float, position: Int)
 
+        fun onItemClick(position: Int)
+
     }
 
     fun setOnRatingBarChangeListener(listener: OnRatingBarChangeListener) {
@@ -43,12 +45,21 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
         return this.historyList[position].id
     }
 
+    fun getTreatment(position: Int): String {
+        return this.historyList[position].treatmentUsed
+    }
+
+    fun getDisease(position: Int): String {
+        return this.historyList[position].diseaseName
+    }
+
     inner class HistoryHolder(
         private val itemBinding: CardHistoryBinding,
         val listener: OnRatingBarChangeListener
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(historyItem: HistoryCardModel) {
-            itemBinding.cardHistoryTitle.text = historyItem.diseaseName
+            itemBinding.cardHistoryDiseaseName.text = historyItem.diseaseName
+            itemBinding.cardHistoryTreatmentUsed.text = historyItem.treatmentUsed
             itemBinding.cardHistoryDate.text = historyItem.date
             if (historyItem.rating == 0)
                 itemBinding.ratingTextView.visibility = View.GONE
@@ -60,6 +71,11 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
             itemBinding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
                 listener.onRatingBarChange(rating, bindingAdapterPosition)
             }
+
+            itemBinding.cardHistoryTreatmentUsed.setOnClickListener{
+                listener.onItemClick(bindingAdapterPosition)
+            }
+
         }
     }
 }
