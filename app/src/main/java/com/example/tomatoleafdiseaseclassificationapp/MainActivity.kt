@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity(), AuthStateListener,
             startActivity(intent)
         }
 
+        binding.cardExplore.root.setOnClickListener {
+            val intent = Intent(this, ExploreActivity::class.java)
+            startActivity(intent)
+        }
+
         val tempImageUri = initTempUri()
 
         registerTakePictureLauncher(tempImageUri)
@@ -140,9 +145,8 @@ class MainActivity : AppCompatActivity(), AuthStateListener,
             startActivity(intent)
         }
 
-        //Launches the camera when button is pressed.
         button.setOnClickListener {
-            resultLauncher.launch("image/*") //launches the activity here
+            resultLauncher.launch("image/*")
 
         }
     }

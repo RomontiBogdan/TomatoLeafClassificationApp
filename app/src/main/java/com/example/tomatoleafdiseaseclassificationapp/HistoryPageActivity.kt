@@ -42,10 +42,10 @@ class HistoryPageActivity : AppCompatActivity() {
             }
 
         })
-        binding.recyclerView.adapter = cardAdapter
+        binding.historyRecyclerView.adapter = cardAdapter
         val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
 
-        binding.recyclerView.layoutManager = mLayoutManager
+        binding.historyRecyclerView.layoutManager = mLayoutManager
         readData()
     }
 
@@ -66,7 +66,7 @@ class HistoryPageActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun addRatingToScan(docId: String, rating: Long) {
         db.collection("Users/$userId/history").document(docId).update("rating", rating)
-        binding.recyclerView.adapter?.notifyDataSetChanged()
+        binding.historyRecyclerView.adapter?.notifyDataSetChanged()
 
     }
 
@@ -90,7 +90,7 @@ class HistoryPageActivity : AppCompatActivity() {
 
                         cardModelArrayList.add(card)
                     }
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    binding.historyRecyclerView.adapter?.notifyDataSetChanged()
                 } else {
                     Toast.makeText(
                         this,

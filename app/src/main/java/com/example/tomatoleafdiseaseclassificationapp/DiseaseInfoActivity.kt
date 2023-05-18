@@ -54,7 +54,7 @@ class DiseaseInfoActivity : AppCompatActivity() {
     private var db = FirebaseFirestore.getInstance()
     private var user = FirebaseAuth.getInstance().currentUser
     private var userId = user?.uid
-    private lateinit var disease: String
+    private var disease: String? = null
     private lateinit var tabAdapter : TabPagerAdapter
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -66,18 +66,24 @@ class DiseaseInfoActivity : AppCompatActivity() {
 
         runOnUiThread {
             val intent = intent
-            val imagePath = intent.getStringExtra("imagePath")
-            val fileUri = Uri.parse(imagePath)
-            val source = ImageDecoder.createSource(contentResolver, fileUri)
-            val bitmap = ImageDecoder.decodeBitmap(source)
-            val dimension = min(bitmap.width, bitmap.height)
-            val thumbnail = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
+            disease = intent.getStringExtra("diseaseName")
+            if(disease != null){
+                binding.imageView.visibility = View.GONE
+            }
+            else{
+                val imagePath = intent.getStringExtra("imagePath")
+                val fileUri = Uri.parse(imagePath)
+                val source = ImageDecoder.createSource(contentResolver, fileUri)
+                val bitmap = ImageDecoder.decodeBitmap(source)
+                val dimension = min(bitmap.width, bitmap.height)
+                val thumbnail = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
 
-            val bitmapImage = Bitmap.createScaledBitmap(thumbnail, imageSize, imageSize, false)
-            val softwareBitmap: Bitmap = bitmapImage.copy(Bitmap.Config.ARGB_8888, false)
-            disease = classifyImage(softwareBitmap)
+                val bitmapImage = Bitmap.createScaledBitmap(thumbnail, imageSize, imageSize, false)
+                val softwareBitmap: Bitmap = bitmapImage.copy(Bitmap.Config.ARGB_8888, false)
+                disease = classifyImage(softwareBitmap)
 
-            binding.imageView.setImageBitmap(thumbnail)
+                binding.imageView.setImageBitmap(thumbnail)
+            }
             binding.diseaseTitle.text = disease
 
             db.document("Treatments/Tomato/Diseases/$disease")
