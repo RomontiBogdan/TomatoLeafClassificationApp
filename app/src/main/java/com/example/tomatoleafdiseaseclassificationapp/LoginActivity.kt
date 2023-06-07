@@ -21,10 +21,10 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
-//        binding.textViewForgotPass.setOnClickListener {
-//            val intent = Intent(this, ForgotPassActivity::class.java)
-//            startActivity(intent)
-//        }
+        binding.textViewForgotPass.setOnClickListener {
+            val intent = Intent(this, ForgotPassActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.textViewGuest.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)

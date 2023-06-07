@@ -70,6 +70,14 @@
         android:textAlignment="textEnd"
         android:textStyle="bold" />
     <TextView
+        android:id="@+id/textViewForgotPass"
+        style="@style/parent"
+        android:layout_marginTop="10dp"
+        android:gravity="end"
+        android:text="@string/forgot_password_hint"
+        android:textAlignment="textEnd"
+        android:textStyle="bold" />
+    <TextView
         android:id="@+id/textViewGuest"
         style="@style/parent"
         android:layout_marginTop="10dp"

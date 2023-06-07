@@ -2,34 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/main_item"
-        android:title="subheader">
-    <menu>
-        <item
-            android:id="@+id/nav_logout"
-
-            android:title="Log Out"
-            android:checkable="true"
-            app:showAsAction="ifRoom"/>
-    </menu>
-    </item>
-<!--    <item-->
-<!--    android:id="@+id/labels_item"-->
-<!--    android:title="labels_subheader_title">-->
-<!--    <menu>-->
-<!--        <item-->
-<!--            android:id="@+id/label_one"-->
-<!--            android:icon="@drawable/ic_baseline_expand_less_24"-->
-<!--            android:title="label_one_title"-->
-<!--            android:checkable="true"-->
-<!--            app:showAsAction="ifRoom"/>-->
-<!--        <item-->
-<!--            android:id="@+id/label_two"-->
-<!--            android:icon="@drawable/ic_baseline_expand_less_24"-->
-<!--            android:title="label_two_title"-->
-<!--            android:checkable="true"-->
-<!--            app:showAsAction="ifRoom"/>-->
-<!--    </menu>-->
-<!--    </item>-->
-
- </menu>
+        android:id="@+id/menuLogOut"
+        android:title="@string/logout"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menuLogin"
+        android:title="@string/menuLogin"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menuRegister"
+        android:title="@string/menuRegister"
+        app:showAsAction="ifRoom"/>
+</menu>

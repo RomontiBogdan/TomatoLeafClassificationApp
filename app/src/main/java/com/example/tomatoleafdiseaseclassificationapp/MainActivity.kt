@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +18,12 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.io.File
 
 
-class MainActivity : AppCompatActivity(), AuthStateListener,
-    NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), AuthStateListener{
     private lateinit var binding: ActivityMainBinding
 
 
@@ -31,7 +33,28 @@ class MainActivity : AppCompatActivity(), AuthStateListener,
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.navigationView.setNavigationItemSelectedListener(this)
+        binding.navigationView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.menuLogOut -> {
+                    Firebase.auth.signOut()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "Successfully logged out", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.menuLogin -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.menuRegister -> {
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
 
         binding.cardHistory.cardImageView.setImageResource(R.drawable.history_icon)
         binding.cardHistory.cardTitle.text = getString(R.string.historyCardTitle)
@@ -81,24 +104,15 @@ class MainActivity : AppCompatActivity(), AuthStateListener,
     private fun updateUi(currentUser: FirebaseUser?) {
         if (currentUser == null) {
             binding.cardHistory.root.visibility = View.GONE
+            binding.navigationView.menu.removeItem(R.id.menuLogOut)
         } else {
             binding.cardHistory.root.visibility = View.VISIBLE
+            binding.navigationView.menu.removeItem(R.id.menuLogin)
+            binding.navigationView.menu.removeItem(R.id.menuRegister)
             val navHeaderBinding =
                 HeaderNavigationDrawerBinding.bind(binding.navigationView.getHeaderView(0))
             navHeaderBinding.loggedUserHeader.text = currentUser.email
         }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_logout -> {
-                Log.d("DRAWER", "LogOut")
-            }
-        }
-        //close navigation drawer
-        binding.drawerLayoutMenu.close()
-        return true
     }
 
     private fun initTempUri(): Uri {
