@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.tomatoleafdiseaseclassificationapp.DiseaseInfoActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.FragmentBioTabBinding
 
-class BioTabFragment(private val textDescription : String) : Fragment() {
+class BioTabFragment(val textDescription : String) : Fragment() {
     private lateinit var fragmentBioTabBinding: FragmentBioTabBinding
 
     override fun onCreateView(

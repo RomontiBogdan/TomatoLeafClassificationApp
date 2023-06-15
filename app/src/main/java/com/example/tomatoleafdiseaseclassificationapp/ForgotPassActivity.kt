@@ -27,7 +27,7 @@ class ForgotPassActivity : AppCompatActivity() {
                         Snackbar.make(binding.root, "Email successfully sent", Snackbar.LENGTH_SHORT).show()
                         startActivity(intent)
                     } else {
-                        Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, it.exception?.message.toString(), Snackbar.LENGTH_SHORT).show()
                     }
                 }
             } else {

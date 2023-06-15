@@ -1,20 +1,20 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityMainBinding
 import com.example.tomatoleafdiseaseclassificationapp.databinding.HeaderNavigationDrawerBinding
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -25,6 +25,11 @@ import java.io.File
 
 
 class MainActivity : AppCompatActivity(), AuthStateListener{
+
+    companion object {
+        private const val CAMERA_PERMISSION_CODE = 100
+    }
+
     private lateinit var binding: ActivityMainBinding
 
 
@@ -33,6 +38,8 @@ class MainActivity : AppCompatActivity(), AuthStateListener{
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        checkPermission(android.Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE)
 
         binding.navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -147,6 +154,8 @@ class MainActivity : AppCompatActivity(), AuthStateListener{
             startActivity(intent)
         }
         button.setOnClickListener {
+            if(checkPermission(android.Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE))
+
             resultLauncher.launch(path) //launches the activity here
 
         }
@@ -163,6 +172,27 @@ class MainActivity : AppCompatActivity(), AuthStateListener{
         button.setOnClickListener {
             resultLauncher.launch("image/*")
 
+        }
+    }
+
+    private fun checkPermission(permission: String, requestCode: Int): Boolean {
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+            return false
+        }
+        return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Snackbar.make(binding.root, "Camera Permission Granted", Snackbar.LENGTH_SHORT).show()
+            } else {
+                Snackbar.make(binding.root, "Camera Permission Denied, can't use camera feature. Grant permission from settings", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 

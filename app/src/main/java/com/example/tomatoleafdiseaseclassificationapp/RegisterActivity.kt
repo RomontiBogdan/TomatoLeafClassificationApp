@@ -33,7 +33,7 @@ class RegisterActivity : AppCompatActivity() {
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                         } else {
-                            Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, it.exception?.message.toString(), Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 } else {

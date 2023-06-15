@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, it.exception?.message.toString(), Snackbar.LENGTH_SHORT).show()
                     }
                 }
             } else {

@@ -239,7 +239,9 @@ class DiseaseInfoActivity : AppCompatActivity() {
             Firebase.firestore.collection("Users/$userId/history")
                 .add(scannedDisease).addOnSuccessListener {
                 }
-        } else throw IllegalArgumentException("")
+        } else{
+            Snackbar.make(binding.root, "Can't add to history if not logged in", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
 
