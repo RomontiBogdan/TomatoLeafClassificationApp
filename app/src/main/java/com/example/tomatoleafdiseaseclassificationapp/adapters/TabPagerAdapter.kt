@@ -4,9 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.tomatoleafdiseaseclassificationapp.fragments.BioTabFragment
-import com.example.tomatoleafdiseaseclassificationapp.fragments.ConventionalTabFragment
-import com.example.tomatoleafdiseaseclassificationapp.fragments.OrganicTabFragment
 
 
 class TabPagerAdapter(fragmentManager: FragmentManager?, lifecycle: Lifecycle?) :

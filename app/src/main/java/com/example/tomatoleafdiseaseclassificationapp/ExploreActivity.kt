@@ -3,11 +3,11 @@ package com.example.tomatoleafdiseaseclassificationapp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tomatoleafdiseaseclassificationapp.adapters.ExploreCardAdapter
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityExploreBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ExploreActivity : AppCompatActivity() {
@@ -53,11 +53,7 @@ class ExploreActivity : AppCompatActivity() {
                     }
                     binding.exploreRecyclerView.adapter?.notifyDataSetChanged()
                 } else {
-                    Toast.makeText(
-                        this,
-                        "No data found in Database",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Snackbar.make(binding.root, "No data found in Database", Snackbar.LENGTH_SHORT).show()
                 }
             }
     }

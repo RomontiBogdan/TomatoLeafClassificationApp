@@ -2,9 +2,9 @@ package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityRegisterBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 class RegisterActivity : AppCompatActivity() {
@@ -33,14 +33,14 @@ class RegisterActivity : AppCompatActivity() {
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                         } else {
-                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 } else {
-                    Toast.makeText(this, "Password is not matching", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "Password is not matching", Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Error: empty fields", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Error: empty fields", Snackbar.LENGTH_SHORT).show()
             }
         }
     }

@@ -1,10 +1,7 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +9,7 @@ import com.example.tomatoleafdiseaseclassificationapp.adapters.HistoryCardAdapte
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityHistoryPageBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,7 +51,7 @@ class HistoryPageActivity : AppCompatActivity() {
         db.document("Treatments/Tomato/Diseases/$diseaseName")
             .get()
             .addOnSuccessListener {
-                val treatmentDescription = it.get("$treatment").toString()
+                val treatmentDescription = it.get(treatment).toString()
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Disease info")
                     .setMessage(treatmentDescription)
@@ -92,17 +90,11 @@ class HistoryPageActivity : AppCompatActivity() {
                     }
                     binding.historyRecyclerView.adapter?.notifyDataSetChanged()
                 } else {
-                    Toast.makeText(
-                        this,
-                        "No data found in Database",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Snackbar.make(binding.root, "No data found in Database", Snackbar.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
-                Log.d("HISTORYVIEW", it.message.toString())
-                Toast.makeText(this, "Fail to get the data.", Toast.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(binding.root, "Fail to get the data.", Snackbar.LENGTH_SHORT)                    .show()
             }
     }
 }

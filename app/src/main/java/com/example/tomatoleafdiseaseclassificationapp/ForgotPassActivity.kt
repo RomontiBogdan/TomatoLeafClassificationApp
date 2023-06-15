@@ -1,10 +1,10 @@
 package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityForgotPassBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 class ForgotPassActivity : AppCompatActivity() {
@@ -24,14 +24,14 @@ class ForgotPassActivity : AppCompatActivity() {
                 firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener {
                     if (it.isSuccessful) {
                         val intent = Intent(this, LoginActivity::class.java)
-                        Toast.makeText(this, "Email successfully sent", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "Email successfully sent", Snackbar.LENGTH_SHORT).show()
                         startActivity(intent)
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
                     }
                 }
             } else {
-                Toast.makeText(this, "Error: empty fields", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Error: empty fields", Snackbar.LENGTH_SHORT).show()
 
             }
         }

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tomatoleafdiseaseclassificationapp.R
 import com.example.tomatoleafdiseaseclassificationapp.databinding.CardExploreBinding
 
-class ExploreCardAdapter(val exploreList: List<String>) :
+class ExploreCardAdapter(private val exploreList: List<String>) :
     RecyclerView.Adapter<ExploreCardAdapter.ExploreHolder>() {
     private lateinit var mListener: OnItemClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreHolder {
@@ -44,7 +44,7 @@ class ExploreCardAdapter(val exploreList: List<String>) :
 
     inner class ExploreHolder(
         private val itemBinding: CardExploreBinding,
-        val listener: OnItemClickListener
+        private val listener: OnItemClickListener
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(exploreItem: String) {
             itemBinding.diseasesTitle.text = exploreItem

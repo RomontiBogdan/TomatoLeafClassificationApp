@@ -2,7 +2,6 @@ package com.example.tomatoleafdiseaseclassificationapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.ActivityLoginBinding
 import com.google.android.material.snackbar.Snackbar
@@ -41,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, it.exception.toString(), Snackbar.LENGTH_SHORT).show()
                     }
                 }
             } else {

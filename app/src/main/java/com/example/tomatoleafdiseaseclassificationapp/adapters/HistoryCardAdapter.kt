@@ -9,7 +9,7 @@ import com.example.tomatoleafdiseaseclassificationapp.R
 import com.example.tomatoleafdiseaseclassificationapp.databinding.CardHistoryBinding
 import com.example.tomatoleafdiseaseclassificationapp.models.HistoryCardModel
 
-class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
+class HistoryCardAdapter(private var historyList: List<HistoryCardModel>) :
     RecyclerView.Adapter<HistoryCardAdapter.HistoryHolder>() {
     private lateinit var mListener: OnRatingBarChangeListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryHolder {
@@ -55,7 +55,7 @@ class HistoryCardAdapter(var historyList: List<HistoryCardModel>) :
 
     inner class HistoryHolder(
         private val itemBinding: CardHistoryBinding,
-        val listener: OnRatingBarChangeListener
+        private val listener: OnRatingBarChangeListener
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(historyItem: HistoryCardModel) {
             itemBinding.cardHistoryDiseaseName.text = historyItem.diseaseName

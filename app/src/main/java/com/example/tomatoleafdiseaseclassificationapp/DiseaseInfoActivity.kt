@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -23,6 +22,7 @@ import com.example.tomatoleafdiseaseclassificationapp.fragments.BioTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.fragments.ConventionalTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.fragments.OrganicTabFragment
 import com.example.tomatoleafdiseaseclassificationapp.ml.LeafResNet50
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -107,8 +107,8 @@ class DiseaseInfoActivity : AppCompatActivity() {
                         tabAdapter.addFragment(OrganicTabFragment(it.get("Organic").toString()))
                     }
                 }
-                .addOnFailureListener { exception ->
-
+                .addOnFailureListener {
+                    Snackbar.make(binding.root, "Something went wrong, try again", Snackbar.LENGTH_SHORT).show()
                 }
         }
 
@@ -157,8 +157,6 @@ class DiseaseInfoActivity : AppCompatActivity() {
             // If the CardView is already expanded, set its visibility
             // to gone and change the expand less icon to expand more.
             if (hiddenView.visibility == View.VISIBLE) {
-                // The transition of the hiddenView is carried out by the TransitionManager class.
-                // Here we use an object of the AutoTransition Class to create a default transition
                 TransitionManager.beginDelayedTransition(cardView, AutoTransition())
                 hiddenView.visibility = View.GONE
                 arrow.setImageResource(R.drawable.ic_baseline_expand_more_24)

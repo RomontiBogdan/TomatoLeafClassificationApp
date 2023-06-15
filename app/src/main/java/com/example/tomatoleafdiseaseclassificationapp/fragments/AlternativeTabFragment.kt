@@ -1,15 +1,14 @@
 package com.example.tomatoleafdiseaseclassificationapp.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.tomatoleafdiseaseclassificationapp.DiseaseInfoActivity
 import com.example.tomatoleafdiseaseclassificationapp.databinding.FragmentAlternativeBinding
-import com.example.tomatoleafdiseaseclassificationapp.databinding.FragmentBioTabBinding
 
-class AlternativeTabFragment(val textDescription : String) : Fragment() {
+class AlternativeTabFragment(private val textDescription : String) : Fragment() {
     private lateinit var binding: FragmentAlternativeBinding
 
     override fun onCreateView(

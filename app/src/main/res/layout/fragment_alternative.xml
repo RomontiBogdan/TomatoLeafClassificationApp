@@ -23,10 +23,13 @@
             android:id="@+id/alternativeTreatmentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bio fragment"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:layout_toEndOf="@id/alternativeTreatmentImageView"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@id/alternativeTreatmentImageView"
+            android:text="Alternative fragment" />
 
         <Button
             android:id="@+id/alternativeTabButton"
